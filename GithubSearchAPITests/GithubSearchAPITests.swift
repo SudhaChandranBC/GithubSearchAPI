@@ -17,24 +17,52 @@ class GithubSearchAPITests: XCTestCase {
         searchAPI = GithubSearchAPI()
     }
 
-    func testAdd() {
-        XCTAssertEqual(searchAPI.add(a: 1, b: 1), 2)
+    override func tearDown() {
+        searchAPI = nil
+        super.tearDown()
     }
     
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    func testSearchApiSuccess() {
+        let promise = expectation(description: "Repositories found!")
+        searchAPI.search(matching: "android", filterBy: "rakutentech") { (result) in
+            switch result {
+            case .success(let repositories):
+                XCTAssertNotNil(repositories)
+                XCTAssertGreaterThan(repositories.count, 0)
+                promise.fulfill()
+            case .failure( _):break
+            }
         }
+        wait(for: [promise], timeout: 5)
     }
-
+    
+    func testSearchAPIFailure() {
+        let promise = expectation(description: "Repositories found!")
+        searchAPI.search(matching: "", filterBy: "") { (result) in
+            switch result {
+            case .success( _):break
+            case .failure(let err):
+                XCTAssertNotNil(err)
+                XCTAssertEqual(err, GithubSearchAPI.APIError.decodeError)
+                promise.fulfill()
+            }
+        }
+        wait(for: [promise], timeout: 5)
+    }
+    
+    func testJSONMapping() throws {
+        let bundle = Bundle(for: type(of: self))
+        let url = bundle.url(forResource: "Repositories", withExtension: "json")!
+        let json = try Data(contentsOf: url)
+        let repo = try JSONDecoder().decode(RepositoriesResponse.self, from: json)
+        let repositories: [Repository] = repo.items!
+        XCTAssertFalse(repositories.isEmpty)
+        
+        let exampleRepo: Repository = repositories.first!
+        XCTAssertEqual(exampleRepo.language, "Java")
+        XCTAssertEqual(exampleRepo.description, "Performance Tracking for Android Apps")
+        XCTAssertEqual(exampleRepo.name, "android-perftracking")
+        XCTAssertFalse(exampleRepo.private)
+    }
+    
 }

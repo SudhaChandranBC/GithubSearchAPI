@@ -10,15 +10,20 @@ import UIKit
 import GithubSearchAPI
 
 class ViewController: UIViewController {
-
-    var searchAPI: GithubSearchAPI!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        searchAPI = GithubSearchAPI()
-        print(searchAPI.add(a: 1, b: 1))
-        
+        GithubSearchAPI().search(matching: "android", filterBy: "rakutentech") { (result) in
+            switch result {
+            case .success(let repositories):
+                print(repositories)
+                //Handle Success
+            case .failure( _):
+                //Handle Failure
+                break
+            }
+        }
     }
 }
 
