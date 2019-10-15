@@ -4,19 +4,20 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>GithubSearchAPI.xcscheme</key>
+		<key>OHHTTPStubs.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>0</integer>
 		</dict>
-		<key>Pods-Example.xcscheme</key>
+		<key>Pods-GithubSearchAPI.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>1</integer>
+		</dict>
+		<key>Pods-GithubSearchAPITests.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>

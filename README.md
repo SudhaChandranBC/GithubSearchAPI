@@ -31,8 +31,8 @@ GithubSearchAPI().search(matching: "android", filterBy: "rakutentech") { (result
 
 * Xcode 10 or later
 * iOS 9.0 or later
-* macOS 10.12 or later
-* Swift 5 compatible
+* macOS 10.13.6 or later
+* Swift 5
 
 
 ## Author
