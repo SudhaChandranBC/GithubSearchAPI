@@ -1,0 +1,16 @@
+PODS:
+  - GithubSearchAPI (0.0.1)
+
+DEPENDENCIES:
+  - GithubSearchAPI (from `../`)
+
+EXTERNAL SOURCES:
+  GithubSearchAPI:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  GithubSearchAPI: 91acbda7615c05663be4ded72f55c0c47c6f7a94
+
+PODFILE CHECKSUM: 536b616f834542e4b34d2492366145af0c831f02
+
+COCOAPODS: 1.7.5

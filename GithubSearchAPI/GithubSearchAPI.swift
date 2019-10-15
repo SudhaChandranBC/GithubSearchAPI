@@ -7,3 +7,14 @@
 //
 
 import Foundation
+
+public class GithubSearchAPI {
+    
+    
+    public init() {}
+    
+    public func add(a: Int, b: Int) -> Int {
+        return a + b
+    }
+    
+}
