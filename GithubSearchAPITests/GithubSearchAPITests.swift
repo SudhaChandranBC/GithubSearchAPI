@@ -38,7 +38,7 @@ class GithubSearchAPITests: XCTestCase {
     }
     
     func testSearchAPIFailure() {
-        let promise = expectation(description: "Repositories found!")
+        let promise = expectation(description: "Repositories not found!")
         searchAPI.search(matching: "", filterBy: "") { (result) in
             switch result {
             case .success( _):break
@@ -55,7 +55,9 @@ class GithubSearchAPITests: XCTestCase {
         let bundle = Bundle(for: type(of: self))
         let url = bundle.url(forResource: "Repositories", withExtension: "json")!
         let json = try Data(contentsOf: url)
-        let repo = try JSONDecoder().decode(RepositoriesResponse.self, from: json)
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let repo = try decoder.decode(RepositoriesResponse.self, from: json)
         let repositories: [Repository] = repo.items!
         XCTAssertFalse(repositories.isEmpty)
         
@@ -64,6 +66,20 @@ class GithubSearchAPITests: XCTestCase {
         XCTAssertEqual(exampleRepo.description, "Performance Tracking for Android Apps")
         XCTAssertEqual(exampleRepo.name, "android-perftracking")
         XCTAssertFalse(exampleRepo.private)
+    }
+    
+    func testSearchApiForDummyArguments() {
+        let promise = expectation(description: "No Repositories found!")
+        searchAPI.search(matching: "abcbjbfdbsfhdjsvfdsbfljdslb*#", filterBy: "*****") { (result) in
+            switch result {
+            case .success(_):break
+            case .failure(let error):
+                XCTAssertNotNil(error)
+                XCTAssertEqual(error, .noData)
+                promise.fulfill()
+            }
+        }
+        wait(for: [promise], timeout: 5)
     }
     
     func testJSONMappingFromFile() {
@@ -115,7 +131,7 @@ class GithubSearchAPITests: XCTestCase {
             case .success( _): break
             case .failure(let err):
                 XCTAssertNotNil(err)
-                XCTAssertEqual(err, GithubSearchAPI.APIError.apiError)
+                XCTAssertEqual(err, .apiError)
                 promise.fulfill()
             }
         }
@@ -136,13 +152,13 @@ class GithubSearchAPITests: XCTestCase {
             )
         }
         
-        let promise = expectation(description: "Status code: 200")
+        let promise = expectation(description: "API decode error")
         searchAPI.search(matching: "s", filterBy: "c") { (result) in
             switch result {
             case .success( _): break
             case .failure(let err):
                 XCTAssertNotNil(err)
-                XCTAssertEqual(err, GithubSearchAPI.APIError.decodeError)
+                XCTAssertEqual(err, .decodeError)
                 promise.fulfill()
             }
         }

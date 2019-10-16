@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: Search API result Model
 struct RepositoriesResponse: Decodable {
-    let total_count: Int
+    let totalCount: Int
     let incompleteResults : Bool?
     ///Array of Github Repositories
     let items: [Repository]?
@@ -109,13 +109,20 @@ public class GithubSearchAPI {
         session.dataTask(with: url) { (data, _, err) in
             if let data = data {
                 do {
-                    let response = try JSONDecoder().decode(RepositoriesResponse.self, from: data)
+                    let decoder = JSONDecoder()
+                    decoder.keyDecodingStrategy = .convertFromSnakeCase
+                    let response = try decoder.decode(RepositoriesResponse.self, from: data)
                     if let repositories = response.items {
-                        repositories.forEach({ (repository) in
-                            guard let descr = repository.description else {return}
-                            print("->\(descr)")
-                        })
-                        completion(.success(repositories)) //Successfully fetch repositories
+                        if repositories.count > 0 {
+                            repositories.forEach({ (repository) in
+                                guard let descr = repository.description else {return}
+                                print("->\(descr)")
+                            })
+                            completion(.success(repositories)) //Successfully fetched repositories
+                        } else {
+                            completion(.failure(.noData)) //No repositories found
+                        }
+                        
                     } else { //Fails when there are no repositories
                         completion(.failure(.noData))
                     }
