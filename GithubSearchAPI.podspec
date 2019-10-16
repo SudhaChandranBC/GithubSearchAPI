@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
 
 spec.name         = "GithubSearchAPI"
-spec.version      = "0.0.2"
+spec.version      = "0.0.1"
 spec.summary      = "Swift implementation of Github Repository Search API."
 
 spec.homepage     = "https://github.com/SudhaChandranBC/GithubSearchAPI"
